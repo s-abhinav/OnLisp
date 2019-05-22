@@ -1,0 +1,26 @@
+#+Title: On Lisp
+
+* 2.2 Defining Functions
+
+#+BEGIN_SRC lisp :session defun :exports both
+  (defun d (x) (* x 2))
+#+END_SRC
+
+#+RESULTS:
+: D
+
+#+BEGIN_SRC lisp :session defun :exports both
+  (d 1)
+#+END_SRC
+
+#+RESULTS:
+: 2
+
+Using the actual "double" symbol name does not work since SBCL complains that it's a redefinition.
+
+#+BEGIN_SRC lisp :ssession defun :expots both
+#'d
+#+END_SRC
+
+#+RESULTS:
+: #<FUNCTION D>
