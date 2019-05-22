@@ -18,7 +18,7 @@
 
 Using the actual "double" symbol name does not work since SBCL complains that it's a redefinition.
 
-#+BEGIN_SRC lisp :ssession defun :expots both
+#+BEGIN_SRC lisp :ssession defun :exports both
 #'d
 #+END_SRC
 
