@@ -2,25 +2,25 @@
 
 * 2.2 Defining Functions
 
-#+BEGIN_SRC lisp :session defun :exports both
+#+BEGIN_SRC lisp :exports both :results value raw
   (defun d (x) (* x 2))
 #+END_SRC
 
 #+RESULTS:
-: D
+D
 
-#+BEGIN_SRC lisp :session defun :exports both
+#+BEGIN_SRC lisp :exports both :results value raw
   (d 1)
 #+END_SRC
 
 #+RESULTS:
-: 2
+2
 
 Using the actual "double" symbol name does not work since SBCL complains that it's a redefinition.
 
-#+BEGIN_SRC lisp :ssession defun :exports both
+#+BEGIN_SRC lisp :exports both :results value raw
 #'d
 #+END_SRC
 
 #+RESULTS:
-: #<FUNCTION D>
+#<FUNCTION D>
