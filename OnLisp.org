@@ -2,25 +2,77 @@
 
 * 2.2 Defining Functions
 
-#+BEGIN_SRC lisp :exports both :results value raw
+#+BEGIN_SRC lisp :exports both :results replace drawer
   (defun d (x) (* x 2))
 #+END_SRC
 
 #+RESULTS:
+:RESULTS:
 D
+:END:
 
-#+BEGIN_SRC lisp :exports both :results value raw
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
   (d 1)
 #+END_SRC
 
 #+RESULTS:
+:RESULTS:
 2
+:END:
 
 Using the actual "double" symbol name does not work since SBCL complains that it's a redefinition.
 
-#+BEGIN_SRC lisp :exports both :results value raw
+#+BEGIN_SRC lisp :exports both :results replace drawer
 #'d
 #+END_SRC
 
 #+RESULTS:
+:RESULTS:
 #<FUNCTION D>
+:END:
+
+
+** Symbol Equality
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (eq #'d (car (list #'d)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+T
+:END:
+
+** Lambda
+*** Lambda evaluation
+#+BEGIN_SRC lisp :exports both :results drawer
+  (lambda (x) (* x x))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#<FUNCTION (LAMBDA (X)) {226D0D6B}>
+:END:
+
+
+*** Lambda reference
+#+BEGIN_SRC lisp :exports both :results drawer
+  #'(lambda (x) (* x x))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#<FUNCTION (LAMBDA (X)) {226D0ECB}>
+:END:
+
+The result is not different if the lambda is prepended by a sharp-quote.
+
+** Function application
+#+BEGIN_SRC lisp :exports both :results drawer
+  (d 3)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+6
+:END:
