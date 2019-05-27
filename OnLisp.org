@@ -1,6 +1,7 @@
 #+Title: On Lisp
 
-* 2.2 Defining Functions
+* 2. Functions
+** 2.2 Defining Functions
 
 #+BEGIN_SRC lisp :exports both :results replace drawer
   (defun d (x) (* x 2))
@@ -33,7 +34,7 @@ Using the actual "double" symbol name does not work since SBCL complains that it
 :END:
 
 
-** Symbol Equality
+*** Symbol Equality
 #+BEGIN_SRC lisp :exports both :results replace drawer
   (eq #'d (car (list #'d)))
 #+END_SRC
@@ -43,8 +44,8 @@ Using the actual "double" symbol name does not work since SBCL complains that it
 T
 :END:
 
-** Lambda
-*** Lambda evaluation
+*** Lambda
+**** Lambda evaluation
 #+BEGIN_SRC lisp :exports both :results drawer
   (lambda (x) (* x x))
 #+END_SRC
@@ -54,8 +55,7 @@ T
 #<FUNCTION (LAMBDA (X)) {226D0D6B}>
 :END:
 
-
-*** Lambda reference
+**** Lambda reference
 #+BEGIN_SRC lisp :exports both :results drawer
   #'(lambda (x) (* x x))
 #+END_SRC
@@ -67,7 +67,7 @@ T
 
 The result is not different if the lambda is prepended by a sharp-quote.
 
-** Function application
+*** Function application
 #+BEGIN_SRC lisp :exports both :results drawer
   (d 3)
 #+END_SRC
@@ -75,4 +75,97 @@ The result is not different if the lambda is prepended by a sharp-quote.
 #+RESULTS:
 :RESULTS:
 6
+:END:
+
+*** Lambda application
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  ((lambda (x) (* x x)) 3)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+9
+:END:
+
+*** Lisp treats variable and function definition separately
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setq d 2)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+2
+:END:
+
+I'm not sure I prefer this behavior compared to Scheme. I think this introduces confusion in the language, since there are more rules. There's a potential for this to break function composition, as in ~(f g)~.
+
+**** Symbol value
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (symbol-value 'd)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+2
+:END:
+
+**** Symbol function
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (symbol-function 'd)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#<FUNCTION D>
+:END:
+
+**** Functions can be assigned to variables
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setq x #'append)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#<FUNCTION APPEND>
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+x
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#<FUNCTION APPEND>
+:END:
+
+*Check for equality*
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (eq (symbol-value 'x) (symbol-function 'append))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+T
+:END:
+
+*** Function definition in Lisp
+**** The usual way
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defun d (x) (* x 2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+D
+:END:
+
+**** Under the hood
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setf (symbol-function 'd)
+        #'(lambda (x) (* x 2)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+#<FUNCTION (LAMBDA (X)) {226D1E0B}>
 :END:
