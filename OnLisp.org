@@ -1,5 +1,15 @@
 #+Title: On Lisp
 
+* Table of contents                                                   :TOC_3:
+- [[#2-functions][2. Functions]]
+  - [[#22-defining-functions][2.2 Defining Functions]]
+    - [[#symbol-equality][Symbol Equality]]
+    - [[#lambda][Lambda]]
+    - [[#function-application][Function application]]
+    - [[#lambda-application][Lambda application]]
+    - [[#lisp-treats-variable-and-function-definition-separately][Lisp treats variable and function definition separately]]
+    - [[#function-definition-in-lisp][Function definition in Lisp]]
+
 * 2. Functions
 ** 2.2 Defining Functions
 
@@ -11,7 +21,6 @@
 :RESULTS:
 D
 :END:
-
 
 #+BEGIN_SRC lisp :exports both :results replace drawer
   (d 1)
@@ -32,7 +41,6 @@ Using the actual "double" symbol name does not work since SBCL complains that it
 :RESULTS:
 #<FUNCTION D>
 :END:
-
 
 *** Symbol Equality
 #+BEGIN_SRC lisp :exports both :results replace drawer
