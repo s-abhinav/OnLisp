@@ -15,6 +15,7 @@
     - [[#non-pair-argument-application][Non pair argument application]]
     - [[#higher-order-functions][Higher order functions]]
     - [[#our-remove-if][our-remove-if]]
+  - [[#24-functions-as-properties][2.4 Functions as Properties]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -292,4 +293,42 @@ D
 #+RESULTS:
 :RESULTS:
 (2 4 6)
+:END:
+** 2.4 Functions as Properties
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setf (get 'dog 'behavior)
+        #'(lambda ()
+            'wag-tail))
+
+  (setf (get 'cat 'behavior)
+        #'(lambda ()
+            'rub-legs))
+
+  (funcall (get 'cat 'behavior))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+RUB-LEGS
+:END:
+
+This is different from Scheme.
+In Scheme, a function application is straightforward.
+#+BEGIN_SRC scheme :exports both :results replace drawer
+  ((lambda (x) (* x x)) 3)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+9
+:END:
+
+Lisp requires funcall
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (funcall #'(lambda (x) (* x x)) 3)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+9
 :END:
