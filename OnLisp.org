@@ -9,6 +9,12 @@
     - [[#lambda-application][Lambda application]]
     - [[#lisp-treats-variable-and-function-definition-separately][Lisp treats variable and function definition separately]]
     - [[#function-definition-in-lisp][Function definition in Lisp]]
+  - [[#23-functional-arguments][2.3 Functional Arguments]]
+    - [[#argument-application][Argument application]]
+    - [[#these-do-not-work][These do not work]]
+    - [[#non-pair-argument-application][Non pair argument application]]
+    - [[#higher-order-functions][Higher order functions]]
+    - [[#our-remove-if][our-remove-if]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -176,4 +182,114 @@ D
 #+RESULTS:
 :RESULTS:
 #<FUNCTION (LAMBDA (X)) {226D1E0B}>
+:END:
+** 2.3 Functional Arguments
+*** Argument application
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (+ 1 2)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+3
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (apply #'+ '(1 2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+3
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (apply (symbol-function '+) '(1 2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+3
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (apply #'(lambda (x y) (+ x y)) '(1 2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+3
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (apply #'+ 1 '(2))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+3
+:END:
+
+*** These do not work
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (apply #'+ '(1) 2)
+  (apply #'+ '(1) (2))
+  (apply #'+ 1 2)
+#+END_SRC
+
+*** Non pair argument application
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (funcall #'+ 1 2)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+3
+:END:
+
+*** Higher order functions
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (mapcar
+   #'(lambda (x) (+ x 10))
+   '(1 2 3))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(11 12 13)
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (sort '(9 5 7 4 3) #'<)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(3 4 5 7 9)
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (remove-if #'evenp '(1 2 3 4 5 6 7 8))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(1 3 5 7)
+:END:
+
+*** our-remove-if
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defun our-remove-if (fn lst)
+    (if (null lst)
+        nil
+        (if (funcall fn (car lst))
+            (our-remove-if fn (cdr lst))
+            (cons (car lst) (our-remove-if fn (cdr lst))))))
+
+  (our-remove-if #'oddp '(1 2 3 4 5 6 7))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(2 4 6)
 :END:
