@@ -16,6 +16,7 @@
     - [[#higher-order-functions][Higher order functions]]
     - [[#our-remove-if][our-remove-if]]
   - [[#24-functions-as-properties][2.4 Functions as Properties]]
+  - [[#25-scope][2.5 Scope]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -332,3 +333,24 @@ Lisp requires funcall
 :RESULTS:
 9
 :END:
+
+** 2.5 Scope
+*Lisp is now lexically scoped*
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (let ((y 7))
+    (defun scope-test (x)
+      (list x y))
+    (let ((y 5))
+      (scope-test 3)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(3 7)
+:END:
+
+In a dynamically scoped list, the result would have instead been ~(3 5)~
+
+where 5 is picked from the immediate definition y.
+
+I think lexical scoping makes closures possible. With dynamic scoping, you lose the state of the enclosing environment.
