@@ -17,6 +17,11 @@
     - [[#our-remove-if][our-remove-if]]
   - [[#24-functions-as-properties][2.4 Functions as Properties]]
   - [[#25-scope][2.5 Scope]]
+  - [[#26-closures][2.6 Closures]]
+    - [[#higher-order-functions-can-create-closure][Higher order functions can create closure]]
+    - [[#closures-with-state][Closures with state]]
+    - [[#closure-instances-or-oop][Closure instances or OOP?]]
+    - [[#a-simple-db][A simple db]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -354,3 +359,128 @@ In a dynamically scoped list, the result would have instead been ~(3 5)~
 where 5 is picked from the immediate definition y.
 
 I think lexical scoping makes closures possible. With dynamic scoping, you lose the state of the enclosing environment.
+
+** 2.6 Closures
+*** Higher order functions can create closure
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defun list+ (l n)
+    (mapcar #'(lambda (x) (+ x n)) l))
+
+  (list+ '(1 2 3) 10)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(11 12 13)
+:END:
+
+*** Closures with state
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (let ((counter 0))
+    (defun new-id () (incf counter))
+    (defun reset-id () (setq counter 0)))
+#+END_SRC
+
+new-id and reset-id both can modify the value of a locally available counter variable.
+
+*** Closure instances or OOP?
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defun make-adder (n)
+    #'(lambda (x) (+ x n)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+MAKE-ADDER
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setq add2 (make-adder 2))
+  (funcall add2 5)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+7
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setq add10 (make-adder 10))
+  (funcall add10 3)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+13
+:END:
+
+*** A simple db
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defun make-dbms (db)
+    (list
+     #'(lambda (key)
+         (cdr (assoc key db)))
+     #'(lambda (key val)
+         (push (cons key val) db)
+         key)
+     #'(lambda (key)
+         (setf db (delete key db :key #'car))
+         key)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+MAKE-DBMS
+:END:
+
+**** lookup
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (setq cities (make-dbms '((boston . us))))
+
+  (funcall (car cities) 'boston)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+US
+:END:
+
+**** db insert
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (funcall (second cities) 'london 'england)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+LONDON
+:END:
+**** non existent entry
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (funcall (first cities) 'paris)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+NIL
+:END:
+
+**** delete
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (funcall (third cities) 'london)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+LONDON
+:END:
+
+**** test delete
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (funcall (first cities) 'london)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+NIL
+:END:
