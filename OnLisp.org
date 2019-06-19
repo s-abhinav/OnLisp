@@ -23,6 +23,8 @@
     - [[#closure-instances-or-oop][Closure instances or OOP?]]
     - [[#a-simple-db][A simple db]]
   - [[#27-local-functions][2.7 Local Functions]]
+  - [[#29-compilation][2.9 Compilation]]
+    - [[#explicit-compilation][Explicit compilation]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -524,3 +526,39 @@ Recursion in labels
 :RESULTS:
 720
 :END:
+** 2.9 Compilation
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defun foo (x) (1+ x))
+  (compiled-function-p #'foo)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+T
+:END:
+
+It looks like this version of CL (SBCL 1.4.14 - win) compiles it already.
+
+*** Explicit compilation
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (compile 'bar '(lambda (x) (* x 3)))
+
+  (funcall #'bar 2)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+6
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (compiled-function-p #'bar)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+T
+:END:
+
+*Conclusion*
+Explicit compilation should be avoided.
