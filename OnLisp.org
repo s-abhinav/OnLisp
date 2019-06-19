@@ -22,6 +22,7 @@
     - [[#closures-with-state][Closures with state]]
     - [[#closure-instances-or-oop][Closure instances or OOP?]]
     - [[#a-simple-db][A simple db]]
+  - [[#27-local-functions][2.7 Local Functions]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -483,4 +484,43 @@ LONDON
 #+RESULTS:
 :RESULTS:
 NIL
+:END:
+** 2.7 Local Functions
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (labels
+      ((inc (x)
+         (1+ x)))
+    (inc 3))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+4
+:END:
+
+Multiple definitions
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (labels
+      ((product (a b) (* a b))
+       (square (x) (product x x)))
+    (square 3))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+9
+:END:
+
+Recursion in labels
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (labels
+      ((fact (x)
+         (cond ((= x 0) 1)
+               (t (* x (fact (- x 1)))))))
+    (fact 6))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+720
 :END:
