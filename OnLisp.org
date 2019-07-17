@@ -28,6 +28,9 @@
 - [[#6-functions-as-representation][6. Functions as Representation]]
   - [[#61-networks][6.1 Networks]]
   - [[#62-compiling-networks][6.2 Compiling networks]]
+- [[#7-macros][7 Macros]]
+  - [[#73-defining-simple-macros][7.3 Defining Simple Macros]]
+  - [[#74-testing-macroexpansion][7.4 Testing Macroexpansion]]
 
 * 2. Functions
 ** 2.2 Defining Functions
@@ -653,3 +656,96 @@ Explicit compilation should be avoided.
 :END:
 
 This version runs similar to the previous version. The difference in this is that this version is compiled and the node configuration cannot be changed at runtime.
+
+* 7 Macros
+** 7.3 Defining Simple Macros
+ Redefining memq as a macro
+memq
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defmacro mymemq (obj lst)
+    `(member ,obj ,lst :test #'eq))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+MYMEMQ
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (mymemq 'x '(a b c x y z))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(X Y Z)
+:END:
+
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (member 'x '(a b c x y z) :test #'eq)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(X Y Z)
+:END:
+
+*while*
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (defmacro mywhile (test &body body)
+    `(do ()
+         ((not ,test))
+       ,@body))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+MYWHILE
+:END:
+
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (let ((n 0))
+    (mywhile
+        (< n 10)
+      (setq n (+ 1 n)))
+    n)
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+10
+:END:
+
+** 7.4 Testing Macroexpansion
+
+*while*
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (macroexpand-1 '(mywhile (able) (laugh)))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(DO () ((NOT (ABLE))) (LAUGH))
+T
+:END:
+
+*or* 
+#+BEGIN_SRC lisp :exports both :results replace drawer
+  (macroexpand-1 '(or x y z))
+#+END_SRC
+
+#+RESULTS:
+:RESULTS:
+(LET ((#:G416 X))
+  (IF #:G416
+      #:G416
+      (LET ((#:G417 Y))
+        (IF #:G417
+            #:G417
+            Z))))
+T
+:END:
+The macroexpansion for or is interesting.
+Gensym have been used for the arguments.
+It also used a recursion on subsequent values and did a syntax transformation using the recursion to create nested lets. Once this is done, it does not need to do any parsing or interpreting since it already did it during the compilation. 
+
